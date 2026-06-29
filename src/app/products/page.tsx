@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { SearchBar } from '@/components/search-bar';
-import { formatCurrency, getCategoryName, getProductStatusLabel, products } from '@/lib/inventory';
+import { getCategories, getProducts } from '@/lib/actions';
+import { formatCurrency, getProductStatusLabel } from '@/lib/inventory';
 
 const statusStyles: Record<string, string> = {
   active: 'bg-mint/15 text-ink-700 ring-1 ring-mint/30',
@@ -14,6 +15,10 @@ type SearchParams = Promise<{ q?: string; category?: string }>;
 
 export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
   const { q = '', category = '' } = await searchParams;
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+
+  const getCategoryName = (categoryId: string) =>
+    categories.find((c) => c.id === categoryId)?.name ?? 'Sin categoría';
 
   const filtered = products.filter((product) => {
     const matchesQuery =
@@ -48,7 +53,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
 
       {/* SearchBar usa useSearchParams, necesita Suspense boundary */}
       <Suspense>
-        <SearchBar />
+        <SearchBar categories={categories} />
       </Suspense>
 
       <div className="mt-6 overflow-hidden rounded-[2rem] border border-ink-200 bg-white shadow-soft">

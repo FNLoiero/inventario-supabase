@@ -2,9 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useTransition } from 'react';
-import { categories } from '@/lib/inventory';
+import { type Category } from '@/lib/inventory';
 
-export function SearchBar() {
+export function SearchBar({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { createProduct, updateProduct } from '@/lib/actions';
-import { categories, type Product } from '@/lib/inventory';
+import { type Category, type Product } from '@/lib/inventory';
 import { productSchema, type ProductFormData } from '@/lib/schemas';
 
 const statusOptions = [
@@ -15,7 +15,7 @@ const statusOptions = [
   { value: 'archived', label: 'Archivado' },
 ] as const;
 
-export function ProductForm({ product }: { product?: Product }) {
+export function ProductForm({ product, categories }: { product?: Product; categories: Category[] }) {
   const isEditing = !!product;
   const [isPending, startTransition] = useTransition();
 

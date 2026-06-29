@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { categories, formatCurrency, getCategoryName, getInventoryStats, getProductStatusLabel, movements, products } from '@/lib/inventory';
+import { getCategories, getProducts } from '@/lib/actions';
+import { formatCurrency, getInventoryStats, getProductStatusLabel } from '@/lib/inventory';
 
 const statusStyles: Record<string, string> = {
   active: 'bg-mint/15 text-ink-700 ring-1 ring-mint/30',
@@ -8,7 +9,8 @@ const statusStyles: Record<string, string> = {
   archived: 'bg-ink-100 text-ink-500 ring-1 ring-ink-200'
 };
 
-export function InventoryDashboard() {
+export async function InventoryDashboard() {
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
   const stats = getInventoryStats(products);
 
   return (
@@ -87,7 +89,7 @@ export function InventoryDashboard() {
                       <div className="font-medium text-ink-900">{product.name}</div>
                       <div className="text-ink-500">{product.sku}</div>
                     </td>
-                    <td className="px-4 py-4 text-ink-600">{getCategoryName(product.categoryId)}</td>
+                    <td className="px-4 py-4 text-ink-600">{categories.find((c) => c.id === product.categoryId)?.name ?? 'Sin categoría'}</td>
                     <td className="px-4 py-4 text-ink-600">{product.stock}</td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${statusStyles[product.status] ?? statusStyles.active}`}>
@@ -103,25 +105,24 @@ export function InventoryDashboard() {
         </div>
 
         <aside className="rounded-[2rem] border border-ink-200 bg-white p-5 shadow-soft">
-          <p className="text-sm font-medium text-ink-500">Actividad reciente</p>
-          <div className="mt-4 space-y-4">
-            {movements.map((movement) => {
-              const product = products.find((item) => item.id === movement.productId);
-              return (
-                <div key={movement.id} className="rounded-[1.3rem] border border-ink-200 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-ink-900">{product?.name}</p>
-                      <p className="text-sm text-ink-500">{movement.reference}</p>
-                    </div>
-                    <span className="rounded-full bg-ink-900 px-3 py-1 text-xs font-medium text-white">{movement.movementType}</span>
-                  </div>
-                  <p className="mt-3 text-sm text-ink-600">
-                    {movement.quantity} unidades • {new Date(movement.createdAt).toLocaleDateString('es-AR')}
-                  </p>
+          <p className="text-sm font-medium text-ink-500">Resumen de stock</p>
+          <div className="mt-4 space-y-3">
+            {products.slice(0, 5).map((product) => (
+              <div key={product.id} className="flex items-center justify-between rounded-[1.3rem] border border-ink-200 p-4">
+                <div>
+                  <p className="font-medium text-ink-900">{product.name}</p>
+                  <p className="text-sm text-ink-500">{product.sku}</p>
                 </div>
-              );
-            })}
+                <span className={`font-display text-xl font-medium ${
+                  product.stock === 0 ? 'text-coral' : product.stock <= product.minStock ? 'text-gold' : 'text-mint'
+                }`}>
+                  {product.stock}
+                </span>
+              </div>
+            ))}
+            {products.length === 0 && (
+              <p className="text-sm text-ink-400">Sin productos cargados aún.</p>
+            )}
           </div>
         </aside>
       </div>

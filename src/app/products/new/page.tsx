@@ -1,6 +1,9 @@
 import { ProductForm } from '@/components/product-form';
+import { getCategories } from '@/lib/actions';
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  const categories = await getCategories();
+
   return (
     <section className="mx-auto max-w-4xl px-6 py-10 lg:px-10 lg:py-14">
       <div>
@@ -11,7 +14,7 @@ export default function NewProductPage() {
         </p>
       </div>
 
-      <ProductForm />
+      <ProductForm categories={categories} />
     </section>
   );
 }

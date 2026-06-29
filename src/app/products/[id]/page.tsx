@@ -1,14 +1,19 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { categories, formatCurrency, getCategoryName, getProductStatusLabel, movements, products } from '@/lib/inventory';
+import { getCategories, getProduct, getProductMovements } from '@/lib/actions';
+import { formatCurrency, getProductStatusLabel } from '@/lib/inventory';
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = products.find((item) => item.id === id);
+  const [product, categories, relatedMovements] = await Promise.all([
+    getProduct(id),
+    getCategories(),
+    getProductMovements(id),
+  ]);
+
   if (!product) notFound();
-  // After the notFound() call, TypeScript knows product is defined
+
   const category = categories.find((item) => item.id === product.categoryId);
-  const relatedMovements = movements.filter((movement) => movement.productId === product.id);
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
@@ -38,7 +43,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         <div className="rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft">
           <dl className="grid gap-4 sm:grid-cols-2">
             <Meta label="SKU" value={product.sku} />
-            <Meta label="Categoría" value={getCategoryName(product.categoryId)} />
+            <Meta label="Categoría" value={category?.name ?? 'Sin categoría'} />
             <Meta label="Precio" value={formatCurrency(product.price)} />
             <Meta label="Estado" value={getProductStatusLabel(product.status)} />
             <Meta label="Stock" value={`${product.stock} unidades`} />
