@@ -1,9 +1,10 @@
 import Link from 'next/link';
+import { signOut } from '@/app/login/actions';
 
 const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/products', label: 'Productos' },
-  { href: '/products/new', label: 'Nuevo producto' }
+  { href: '/products/new', label: 'Nuevo producto' },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -15,17 +16,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <p className="font-display text-lg tracking-[0.24em] text-sand uppercase">Inventario</p>
             <p className="text-sm text-white/70">MVP con Supabase y Next.js</p>
           </div>
-          <nav className="flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 text-sm">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full px-4 py-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+          <div className="flex items-center gap-3">
+            <nav className="flex flex-wrap items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 text-sm">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-full px-4 py-2 text-white/80 transition hover:bg-white/10 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10 hover:text-white"
               >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+                Salir
+              </button>
+            </form>
+          </div>
         </div>
       </header>
       <main>{children}</main>
