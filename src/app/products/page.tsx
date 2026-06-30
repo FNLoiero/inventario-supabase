@@ -36,16 +36,16 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     <section className="mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-medium text-ink-500">Inventario</p>
-          <h1 className="mt-1 font-display text-4xl text-ink-900">Productos</h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-ink-600">
+          <p className="text-sm font-medium text-white/50">Inventario</p>
+          <h1 className="mt-1 font-display text-4xl text-white">Productos</h1>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-white/60">
             {filtered.length} {filtered.length === 1 ? 'producto' : 'productos'}
             {q || category ? ' · filtrado' : ' en total'}
           </p>
         </div>
         <Link
           href="/products/new"
-          className="inline-flex w-fit rounded-full bg-ink-900 px-5 py-3 font-medium text-white shadow-soft transition hover:translate-y-[-1px]"
+          className="inline-flex w-fit rounded-full bg-sand px-5 py-3 font-medium text-ink-900 shadow-soft transition hover:translate-y-[-1px]"
         >
           Nuevo producto
         </Link>

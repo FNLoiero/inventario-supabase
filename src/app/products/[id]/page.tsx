@@ -19,20 +19,20 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     <section className="mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-14">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-medium text-ink-500">Detalle de producto</p>
-          <h1 className="mt-1 font-display text-4xl text-ink-900">{product.name}</h1>
-          <p className="mt-3 text-ink-600">{product.description}</p>
+          <p className="text-sm font-medium text-white/50">Productos · Detalle</p>
+          <h1 className="mt-1 font-display text-4xl text-white">{product.name}</h1>
+          <p className="mt-3 text-white/60">{product.description}</p>
         </div>
         <div className="flex gap-3">
           <Link
             href={`/products/${product.id}/edit`}
-            className="inline-flex w-fit rounded-full bg-ink-900 px-5 py-3 font-medium text-white shadow-soft transition hover:translate-y-[-1px]"
+            className="inline-flex w-fit rounded-full bg-sand px-5 py-3 font-medium text-ink-900 shadow-soft transition hover:translate-y-[-1px]"
           >
             Editar
           </Link>
           <Link
             href="/products"
-            className="inline-flex w-fit rounded-full border border-ink-200 px-5 py-3 font-medium text-ink-700 transition hover:bg-ink-50"
+            className="inline-flex w-fit rounded-full border border-white/30 px-5 py-3 font-medium text-white/80 transition hover:bg-white/10"
           >
             Volver
           </Link>
@@ -49,12 +49,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <Meta label="Stock" value={`${product.stock} unidades`} />
             <Meta label="Stock mínimo" value={`${product.minStock} unidades`} />
           </dl>
-          <div className="mt-6 rounded-[1.5rem] bg-ink-50 p-5">
-            <p className="text-sm font-medium text-ink-500">Contexto</p>
-            <p className="mt-2 text-ink-700">
-              {category ? `Este producto pertenece a ${category.name}.` : 'No hay categoría asociada.'} La vista deja listo el espacio para historial, notas o auditoría.
-            </p>
-          </div>
+          {product.description && (
+            <div className="mt-6 rounded-[1.5rem] bg-ink-50 p-5">
+              <p className="text-sm font-medium text-ink-500">Descripción</p>
+              <p className="mt-2 text-ink-700">{product.description}</p>
+            </div>
+          )}
         </div>
 
         <div className="rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft">

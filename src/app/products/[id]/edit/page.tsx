@@ -11,10 +11,10 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   return (
     <section className="mx-auto max-w-4xl px-6 py-10 lg:px-10 lg:py-14">
       <div>
-        <p className="text-sm font-medium text-ink-500">Inventario · Editar</p>
-        <h1 className="mt-1 font-display text-4xl text-ink-900">{product.name}</h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-ink-600">
-          Los cambios se guardan y te redirigen al detalle del producto.
+        <p className="text-sm font-medium text-white/50">Productos · Editar</p>
+        <h1 className="mt-1 font-display text-4xl text-white">{product.name}</h1>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-white/60">
+          Modificá los datos del producto. Los cambios se aplican de inmediato.
         </p>
       </div>
 
