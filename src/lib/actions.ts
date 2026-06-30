@@ -98,11 +98,10 @@ export async function getProductMovements(productId: string): Promise<StockMovem
 
 // ─── Create ──────────────────────────────────────────────────────────────────
 
-export async function createProduct(data: ProductFormData) {
+export async function createProduct(data: ProductFormData): Promise<{ error?: string } | void> {
   const parsed = productSchema.parse(data);
 
   if (!supabase) {
-    // Demo mode: no Supabase configured, just navigate back
     redirect('/products');
   }
 
@@ -117,13 +116,17 @@ export async function createProduct(data: ProductFormData) {
     description: parsed.description ?? null,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
+    return { error: 'Ocurrió un error al guardar el producto.' };
+  }
+
   redirect('/products');
 }
 
 // ─── Update ──────────────────────────────────────────────────────────────────
 
-export async function updateProduct(id: string, data: ProductFormData) {
+export async function updateProduct(id: string, data: ProductFormData): Promise<{ error?: string } | void> {
   const parsed = productSchema.parse(data);
 
   if (!supabase) {
@@ -145,7 +148,11 @@ export async function updateProduct(id: string, data: ProductFormData) {
     })
     .eq('id', id);
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
+    return { error: 'Ocurrió un error al guardar los cambios.' };
+  }
+
   redirect(`/products/${id}`);
 }
 

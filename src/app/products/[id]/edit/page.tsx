@@ -1,15 +1,12 @@
 import { notFound } from 'next/navigation';
 import { ProductForm } from '@/components/product-form';
-import { getCategories } from '@/lib/actions';
-import { products } from '@/lib/inventory';
+import { getCategories, getProduct } from '@/lib/actions';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const [product, categories] = await Promise.all([getProduct(id), getCategories()]);
 
   if (!product) notFound();
-
-  const categories = await getCategories();
 
   return (
     <section className="mx-auto max-w-4xl px-6 py-10 lg:px-10 lg:py-14">

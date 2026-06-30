@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { createProduct, updateProduct } from '@/lib/actions';
 import { type Category, type Product } from '@/lib/inventory';
@@ -18,6 +18,7 @@ const statusOptions = [
 export function ProductForm({ product, categories }: { product?: Product; categories: Category[] }) {
   const isEditing = !!product;
   const [isPending, startTransition] = useTransition();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -44,11 +45,14 @@ export function ProductForm({ product, categories }: { product?: Product; catego
   });
 
   function onSubmit(data: ProductFormData) {
+    setServerError(null);
     startTransition(async () => {
-      if (isEditing) {
-        await updateProduct(product.id, data);
-      } else {
-        await createProduct(data);
+      const result = isEditing
+        ? await updateProduct(product.id, data)
+        : await createProduct(data);
+
+      if (result?.error) {
+        setServerError(result.error);
       }
     });
   }
@@ -58,6 +62,12 @@ export function ProductForm({ product, categories }: { product?: Product; catego
       onSubmit={handleSubmit(onSubmit)}
       className="mt-8 grid gap-5 rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft lg:grid-cols-2"
     >
+      {serverError && (
+        <div className="lg:col-span-2 rounded-2xl bg-coral/10 border border-coral/30 px-4 py-3 text-sm text-coral">
+          {serverError}
+        </div>
+      )}
+
       <Field label="Nombre" error={errors.name?.message}>
         <input
           {...register('name')}
@@ -99,7 +109,6 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         <input
           {...register('price')}
           type="number"
-          min="0"
           step="0.01"
           className={inputClass(!!errors.price)}
           placeholder="45990"
@@ -110,7 +119,6 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         <input
           {...register('stock')}
           type="number"
-          min="0"
           step="1"
           className={inputClass(!!errors.stock)}
           placeholder="12"
@@ -121,7 +129,6 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         <input
           {...register('minStock')}
           type="number"
-          min="0"
           step="1"
           className={inputClass(!!errors.minStock)}
           placeholder="6"
