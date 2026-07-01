@@ -7,6 +7,7 @@ import {
   products as mockProducts,
   type Category,
   type Product,
+  type ProductStatus,
   type StockMovement,
 } from './inventory';
 import { productSchema, type ProductFormData } from './schemas';
@@ -272,7 +273,7 @@ interface ApiProduct {
   price: number;
   stock: number;
   minStock: number;
-  status: string;
+  status: ProductStatus;
   description?: string;
   updatedAt: string;
 }
