@@ -40,7 +40,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft">
+        <div className="rounded-[2rem] border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 p-6 shadow-soft">
           <dl className="grid gap-4 sm:grid-cols-2">
             <Meta label="SKU" value={product.sku} />
             <Meta label="Categoría" value={category?.name ?? 'Sin categoría'} />
@@ -50,15 +50,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <Meta label="Stock mínimo" value={`${product.minStock} unidades`} />
           </dl>
           {product.description && (
-            <div className="mt-6 rounded-[1.5rem] bg-ink-50 p-5">
-              <p className="text-sm font-medium text-ink-500">Descripción</p>
-              <p className="mt-2 text-ink-700">{product.description}</p>
+            <div className="mt-6 rounded-[1.5rem] bg-ink-50 dark:bg-ink-700 p-5">
+              <p className="text-sm font-medium text-ink-500 dark:text-ink-400">Descripción</p>
+              <p className="mt-2 text-ink-700 dark:text-ink-200">{product.description}</p>
             </div>
           )}
         </div>
 
-        <div className="rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft">
-          <p className="text-sm font-medium text-ink-500">Movimientos recientes</p>
+        <div className="rounded-[2rem] border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 p-6 shadow-soft">
+          <p className="text-sm font-medium text-ink-500 dark:text-ink-400">Movimientos recientes</p>
           {relatedMovements.length === 0 ? (
             <p className="mt-4 text-sm text-ink-400">Sin movimientos registrados.</p>
           ) : (
@@ -75,13 +75,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     ? 'bg-mint/15 text-mint ring-1 ring-mint/30'
                     : movement.movementType === 'out'
                       ? 'bg-coral/15 text-coral ring-1 ring-coral/30'
-                      : 'bg-gold/20 text-ink-700 ring-1 ring-gold/35';
+                      : 'bg-gold/20 text-yellow-800 dark:text-gold ring-1 ring-gold/35';
                 return (
-                  <div key={movement.id} className="rounded-[1.25rem] border border-ink-200 p-4">
+                  <div key={movement.id} className="rounded-[1.25rem] border border-ink-200 dark:border-ink-700 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="font-medium text-ink-900">{movement.reference}</p>
-                        <p className="text-sm text-ink-500">
+                        <p className="font-medium text-ink-900 dark:text-white">{movement.reference}</p>
+                        <p className="text-sm text-ink-500 dark:text-ink-400">
                           {new Date(movement.createdAt).toLocaleString('es-AR')}
                         </p>
                       </div>
@@ -89,7 +89,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                         {movLabel}
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-ink-600">
+                    <p className="mt-3 text-sm text-ink-600 dark:text-ink-300">
                       {movement.movementType === 'out' ? '−' : '+'}{movement.quantity} unidades
                     </p>
                   </div>
@@ -105,9 +105,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.25rem] border border-ink-200 p-4">
-      <dt className="text-sm font-medium text-ink-500">{label}</dt>
-      <dd className="mt-1 text-base font-medium text-ink-900">{value}</dd>
+    <div className="rounded-[1.25rem] border border-ink-200 dark:border-ink-700 p-4">
+      <dt className="text-sm font-medium text-ink-500 dark:text-ink-400">{label}</dt>
+      <dd className="mt-1 text-base font-medium text-ink-900 dark:text-white">{value}</dd>
     </div>
   );
 }

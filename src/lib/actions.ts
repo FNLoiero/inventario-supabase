@@ -13,11 +13,6 @@ import {
 import { productSchema, type ProductFormData } from './schemas';
 import { supabase } from './supabase';
 
-// ─── Data source ──────────────────────────────────────────────────────────────
-// Si INVENTARIO_API_URL está definida, el frontend llama a la .NET Web API.
-// Si no, llama directamente a Supabase.
-// Ambas hablan con la misma base de datos Postgres.
-
 const API_URL = process.env.INVENTARIO_API_URL?.replace(/\/$/, '');
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T | null> {
@@ -34,16 +29,11 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T | null> 
   }
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getCategories(): Promise<Category[]> {
-  // .NET API
   if (API_URL) {
     const data = await apiFetch<Category[]>('/categories');
     if (data) return data;
   }
-
-  // Supabase directo
   if (supabase) {
     const { data, error } = await supabase
       .from('categories')
@@ -51,18 +41,14 @@ export async function getCategories(): Promise<Category[]> {
       .order('name');
     if (!error && data) return data as Category[];
   }
-
   return mockCategories;
 }
 
 export async function getProducts(): Promise<Product[]> {
-  // .NET API
   if (API_URL) {
     const data = await apiFetch<ApiProduct[]>('/products');
     if (data) return data.map(mapApiProduct);
   }
-
-  // Supabase directo
   if (supabase) {
     const { data, error } = await supabase
       .from('products')
@@ -70,18 +56,14 @@ export async function getProducts(): Promise<Product[]> {
       .order('updated_at', { ascending: false });
     if (!error && data) return data.map(mapSupabaseProduct);
   }
-
   return mockProducts;
 }
 
 export async function getProduct(id: string): Promise<Product | null> {
-  // .NET API
   if (API_URL) {
     const data = await apiFetch<ApiProduct>(`/products/${id}`);
     if (data) return mapApiProduct(data);
   }
-
-  // Supabase directo
   if (supabase) {
     const { data, error } = await supabase
       .from('products')
@@ -90,18 +72,14 @@ export async function getProduct(id: string): Promise<Product | null> {
       .single();
     if (!error && data) return mapSupabaseProduct(data);
   }
-
   return mockProducts.find((p) => p.id === id) ?? null;
 }
 
 export async function getProductMovements(productId: string): Promise<StockMovement[]> {
-  // .NET API
   if (API_URL) {
     const data = await apiFetch<ApiMovement[]>(`/products/${productId}/movements`);
     if (data) return data.map(mapApiMovement);
   }
-
-  // Supabase directo
   if (supabase) {
     const { data, error } = await supabase
       .from('stock_movements')
@@ -110,16 +88,18 @@ export async function getProductMovements(productId: string): Promise<StockMovem
       .order('created_at', { ascending: false });
     if (!error && data) return data.map(mapSupabaseMovement);
   }
-
   return mockMovements.filter((m) => m.productId === productId);
 }
 
-// ─── Mutations ────────────────────────────────────────────────────────────────
+function calcStatus(stock: number, minStock: number, current: string): string {
+  if (current === 'archived') return 'archived';
+  if (stock === 0) return 'out_of_stock';
+  if (stock <= minStock) return 'low_stock';
+  return 'active';
+}
 
 export async function createProduct(data: ProductFormData): Promise<{ error?: string } | void> {
   const parsed = productSchema.parse(data);
-
-  // .NET API
   if (API_URL) {
     const res = await fetch(`${API_URL}/api/products`, {
       method: 'POST',
@@ -131,17 +111,14 @@ export async function createProduct(data: ProductFormData): Promise<{ error?: st
         price: parsed.price,
         stock: parsed.stock,
         minStock: parsed.minStock,
-        status: parsed.status,
+        status: calcStatus(parsed.stock, parsed.minStock, parsed.status),
         description: parsed.description ?? null,
       }),
     });
-
     if (res.status === 409) return { error: 'Ya existe un producto con ese SKU.' };
-    if (!res.ok) return { error: 'Ocurrió un error al guardar el producto.' };
+    if (!res.ok) return { error: 'Ocurrio un error al guardar el producto.' };
     redirect('/products');
   }
-
-  // Supabase directo
   if (supabase) {
     const { error } = await supabase.from('products').insert({
       name: parsed.name,
@@ -150,17 +127,15 @@ export async function createProduct(data: ProductFormData): Promise<{ error?: st
       price: parsed.price,
       stock: parsed.stock,
       min_stock: parsed.minStock,
-      status: parsed.status,
+      status: calcStatus(parsed.stock, parsed.minStock, parsed.status),
       description: parsed.description ?? null,
     });
-
     if (error) {
       if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
-      return { error: 'Ocurrió un error al guardar el producto.' };
+      return { error: 'Ocurrio un error al guardar el producto.' };
     }
     redirect('/products');
   }
-
   redirect('/products');
 }
 
@@ -169,8 +144,6 @@ export async function updateProduct(
   data: ProductFormData,
 ): Promise<{ error?: string } | void> {
   const parsed = productSchema.parse(data);
-
-  // .NET API
   if (API_URL) {
     const res = await fetch(`${API_URL}/api/products/${id}`, {
       method: 'PUT',
@@ -182,17 +155,14 @@ export async function updateProduct(
         price: parsed.price,
         stock: parsed.stock,
         minStock: parsed.minStock,
-        status: parsed.status,
+        status: calcStatus(parsed.stock, parsed.minStock, parsed.status),
         description: parsed.description ?? null,
       }),
     });
-
     if (res.status === 409) return { error: 'Ya existe un producto con ese SKU.' };
-    if (!res.ok) return { error: 'Ocurrió un error al guardar los cambios.' };
+    if (!res.ok) return { error: 'Ocurrio un error al guardar los cambios.' };
     redirect(`/products/${id}`);
   }
-
-  // Supabase directo
   if (supabase) {
     const { error } = await supabase
       .from('products')
@@ -203,35 +173,29 @@ export async function updateProduct(
         price: parsed.price,
         stock: parsed.stock,
         min_stock: parsed.minStock,
-        status: parsed.status,
+        status: calcStatus(parsed.stock, parsed.minStock, parsed.status),
         description: parsed.description ?? null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);
-
     if (error) {
       if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
-      return { error: 'Ocurrió un error al guardar los cambios.' };
+      return { error: 'Ocurrio un error al guardar los cambios.' };
     }
     redirect(`/products/${id}`);
   }
-
   redirect(`/products/${id}`);
 }
 
 export async function deleteProduct(id: string) {
-  // .NET API
   if (API_URL) {
     await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
     redirect('/products');
   }
-
-  // Supabase directo
   if (supabase) {
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) throw new Error(error.message);
   }
-
   redirect('/products');
 }
 
@@ -241,7 +205,6 @@ export async function addStockMovement(
   quantity: number,
   reference?: string,
 ) {
-  // .NET API
   if (API_URL) {
     await fetch(`${API_URL}/api/movements`, {
       method: 'POST',
@@ -250,8 +213,6 @@ export async function addStockMovement(
     });
     return;
   }
-
-  // Supabase directo
   if (supabase) {
     const { error } = await supabase.from('stock_movements').insert({
       product_id: productId,
@@ -262,8 +223,6 @@ export async function addStockMovement(
     if (error) throw new Error(error.message);
   }
 }
-
-// ─── Mappers ──────────────────────────────────────────────────────────────────
 
 interface ApiProduct {
   id: string;
@@ -296,7 +255,7 @@ function mapApiProduct(row: ApiProduct): Product {
     price: Number(row.price),
     stock: row.stock,
     minStock: row.minStock,
-    status: row.status,
+    status: calcStatus(row.stock, row.minStock, row.status) as ProductStatus,
     description: row.description ?? '',
     updatedAt: row.updatedAt,
   };
@@ -312,7 +271,7 @@ function mapSupabaseProduct(row: any): Product {
     price: Number(row.price),
     stock: row.stock,
     minStock: row.min_stock,
-    status: row.status,
+    status: calcStatus(row.stock, row.min_stock, row.status) as ProductStatus,
     description: row.description ?? '',
     updatedAt: row.updated_at,
   };

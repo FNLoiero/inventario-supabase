@@ -8,13 +8,6 @@ import { createProduct, updateProduct } from '@/lib/actions';
 import { type Category, type Product } from '@/lib/inventory';
 import { productSchema, type ProductFormData } from '@/lib/schemas';
 
-const statusOptions = [
-  { value: 'active', label: 'Activo' },
-  { value: 'low_stock', label: 'Stock bajo' },
-  { value: 'out_of_stock', label: 'Sin stock' },
-  { value: 'archived', label: 'Archivado' },
-] as const;
-
 export function ProductForm({ product, categories }: { product?: Product; categories: Category[] }) {
   const isEditing = !!product;
   const [isPending, startTransition] = useTransition();
@@ -60,7 +53,7 @@ export function ProductForm({ product, categories }: { product?: Product; catego
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mt-8 grid gap-5 rounded-[2rem] border border-ink-200 bg-white p-6 shadow-soft lg:grid-cols-2"
+      className="mt-8 grid gap-5 rounded-[2rem] border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 p-6 shadow-soft lg:grid-cols-2"
     >
       {serverError && (
         <div className="lg:col-span-2 rounded-2xl bg-coral/10 border border-coral/30 px-4 py-3 text-sm text-coral">
@@ -95,14 +88,15 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         </select>
       </Field>
 
+      {/* Estado: solo permite archivar manualmente. El resto se calcula por stock. */}
       <Field label="Estado" error={errors.status?.message}>
         <select {...register('status')} className={inputClass(!!errors.status)}>
-          {statusOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
+          <option value="active">Activo (calculado por stock)</option>
+          <option value="archived">Archivado</option>
         </select>
+        <p className="mt-1 text-xs text-ink-400 dark:text-ink-500">
+          El estado se calcula automáticamente según el stock y el mínimo.
+        </p>
       </Field>
 
       <Field label="Precio (ARS)" error={errors.price?.message}>
@@ -115,7 +109,7 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         />
       </Field>
 
-      <Field label="Stock inicial" error={errors.stock?.message}>
+      <Field label="Stock" error={errors.stock?.message}>
         <input
           {...register('stock')}
           type="number"
@@ -149,13 +143,13 @@ export function ProductForm({ product, categories }: { product?: Product; catego
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-full bg-ink-900 px-5 py-3 font-medium text-white shadow-soft transition hover:translate-y-[-1px] disabled:opacity-60"
+          className="rounded-full bg-ink-900 dark:bg-sand dark:text-ink-900 px-5 py-3 font-medium text-white shadow-soft transition hover:translate-y-[-1px] disabled:opacity-60"
         >
           {isPending ? 'Guardando…' : isEditing ? 'Guardar cambios' : 'Crear producto'}
         </button>
         <Link
           href={isEditing ? `/products/${product.id}` : '/products'}
-          className="rounded-full border border-ink-200 px-5 py-3 font-medium text-ink-700 transition hover:bg-ink-50"
+          className="rounded-full border border-ink-200 dark:border-ink-600 px-5 py-3 font-medium text-ink-700 dark:text-ink-300 transition hover:bg-ink-50 dark:hover:bg-ink-700"
         >
           Cancelar
         </Link>
@@ -165,8 +159,10 @@ export function ProductForm({ product, categories }: { product?: Product; catego
 }
 
 function inputClass(hasError: boolean) {
-  return `mt-2 w-full rounded-2xl border px-4 py-3 outline-none transition focus:border-coral bg-white ${
-    hasError ? 'border-coral/70 bg-coral/5' : 'border-ink-200 focus:border-coral'
+  return `mt-2 w-full rounded-2xl border px-4 py-3 outline-none transition bg-white dark:bg-ink-700 dark:text-white dark:placeholder-ink-400 ${
+    hasError
+      ? 'border-coral/70 bg-coral/5 dark:bg-coral/10'
+      : 'border-ink-200 dark:border-ink-600 focus:border-coral dark:focus:border-coral'
   }`;
 }
 
@@ -181,7 +177,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-sm font-medium text-ink-700">{label}</label>
+      <label className="text-sm font-medium text-ink-700 dark:text-ink-300">{label}</label>
       {children}
       {error && <p className="mt-1 text-xs text-coral">{error}</p>}
     </div>
