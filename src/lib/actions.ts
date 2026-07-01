@@ -281,7 +281,7 @@ interface ApiProduct {
 interface ApiMovement {
   id: string;
   productId: string;
-  movementType: string;
+  movementType: 'in' | 'out' | 'adjustment';
   quantity: number;
   reference?: string;
   createdAt: string;
