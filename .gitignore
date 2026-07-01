@@ -5,3 +5,7 @@ out
 .env.local
 .DS_Store
 coverage
+
+# .NET
+InventarioAPI/bin
+InventarioAPI/obj
