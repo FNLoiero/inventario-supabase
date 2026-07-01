@@ -7,11 +7,11 @@ export default function LoginPage() {
   const [state, action, isPending] = useActionState(signIn, null);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-ink-50 px-4 text-ink-900">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <p className="font-display text-2xl tracking-[0.2em] text-ink-900 uppercase">Inventario</p>
-          <p className="mt-2 text-sm text-ink-500">Ingresá para continuar</p>
+          <p className="mt-2 text-sm text-ink-500">Ingresa para continuar</p>
         </div>
 
         <form
@@ -32,20 +32,20 @@ export default function LoginPage() {
                 type="email"
                 required
                 autoComplete="email"
-                className="mt-2 w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 outline-none transition focus:border-coral"
+                className="mt-2 w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 text-ink-900 placeholder-ink-400 outline-none transition focus:border-coral"
                 placeholder="tu@email.com"
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-ink-700">Contraseña</label>
+              <label className="text-sm font-medium text-ink-700">Contrasena</label>
               <input
                 name="password"
                 type="password"
                 required
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 outline-none transition focus:border-coral"
-                placeholder="••••••••"
+                className="mt-2 w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 text-ink-900 placeholder-ink-400 outline-none transition focus:border-coral"
+                placeholder="secreta"
               />
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function LoginPage() {
             disabled={isPending}
             className="mt-6 w-full rounded-full bg-ink-900 py-3 font-medium text-white shadow-soft transition hover:translate-y-[-1px] disabled:opacity-60"
           >
-            {isPending ? 'Ingresando…' : 'Ingresar'}
+            {isPending ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
       </div>

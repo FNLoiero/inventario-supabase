@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import {
   categories as mockCategories,
@@ -117,6 +118,7 @@ export async function createProduct(data: ProductFormData): Promise<{ error?: st
     });
     if (res.status === 409) return { error: 'Ya existe un producto con ese SKU.' };
     if (!res.ok) return { error: 'Ocurrio un error al guardar el producto.' };
+    revalidatePath('/', 'layout');
     redirect('/products');
   }
   if (supabase) {
@@ -134,8 +136,10 @@ export async function createProduct(data: ProductFormData): Promise<{ error?: st
       if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
       return { error: 'Ocurrio un error al guardar el producto.' };
     }
+    revalidatePath('/', 'layout');
     redirect('/products');
   }
+  revalidatePath('/', 'layout');
   redirect('/products');
 }
 
@@ -161,6 +165,7 @@ export async function updateProduct(
     });
     if (res.status === 409) return { error: 'Ya existe un producto con ese SKU.' };
     if (!res.ok) return { error: 'Ocurrio un error al guardar los cambios.' };
+    revalidatePath('/', 'layout');
     redirect(`/products/${id}`);
   }
   if (supabase) {
@@ -182,20 +187,24 @@ export async function updateProduct(
       if (error.code === '23505') return { error: 'Ya existe un producto con ese SKU.' };
       return { error: 'Ocurrio un error al guardar los cambios.' };
     }
+    revalidatePath('/', 'layout');
     redirect(`/products/${id}`);
   }
+  revalidatePath('/', 'layout');
   redirect(`/products/${id}`);
 }
 
 export async function deleteProduct(id: string) {
   if (API_URL) {
     await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
+    revalidatePath('/', 'layout');
     redirect('/products');
   }
   if (supabase) {
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) throw new Error(error.message);
   }
+  revalidatePath('/', 'layout');
   redirect('/products');
 }
 
