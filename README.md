@@ -3,7 +3,11 @@
 MVP de gestión de inventario desarrollado como challenge técnico para AranguriApps. Permite controlar el stock de una tienda o depósito: crear y editar productos, monitorear niveles de stock, recibir alertas de reposición y exportar datos.
 
 **Demo en producción:** [inventario-supabase.vercel.app](https://inventario-supabase.vercel.app)
-> Credenciales de acceso disponibles bajo solicitud.
+
+| Campo | Valor |
+|---|---|
+| Email | `fedel987654@gmail.com` |
+| Contraseña | `hitachi123` |
 
 ---
 
@@ -214,11 +218,11 @@ No hay integración con CI/CD automático. Los tests se ejecutan manualmente ant
 ## Fuera del MVP
 
 - Multi-usuario con roles diferenciados
-- Importacion/exportacion masiva
-- Reportes avanzados (comparativas historicas, tendencias)
-- Deploy de la .NET API (requeriria Railway, Fly.io o similar)
-- Tests de integracion / end-to-end (Playwright)
-- CI/CD automatizado con ejecucion de tests en cada push
+- Importación/exportación masiva
+- Reportes avanzados (comparativas históricas, tendencias)
+- Deploy de la .NET API (requeriría Railway, Fly.io o similar)
+- Tests de integración / end-to-end (Playwright)
+- CI/CD automatizado con ejecución de tests en cada push
 
 ---
 
