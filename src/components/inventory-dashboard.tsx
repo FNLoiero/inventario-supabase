@@ -5,7 +5,7 @@ import { StockChart } from './stock-chart';
 
 const statusStyles: Record<string, string> = {
   active: 'bg-mint/15 text-mint-700 dark:text-mint ring-1 ring-mint/30',
-  low_stock: 'bg-gold/20 text-yellow-800 dark:text-gold ring-1 ring-gold/35',
+  low_stock: 'bg-gold/20 text-amber-600 dark:text-gold ring-1 ring-gold/35',
   out_of_stock: 'bg-coral/15 text-coral ring-1 ring-coral/30',
   archived: 'bg-ink-100 dark:bg-ink-700 text-ink-500 dark:text-ink-400 ring-1 ring-ink-200 dark:ring-ink-600',
 };
@@ -26,14 +26,14 @@ export async function InventoryDashboard() {
 
       {/* Alertas de reorden */}
       {reorderAlerts.length > 0 && (
-        <div className="mb-8 rounded-[1.75rem] border border-gold/40 bg-gold/10 p-5">
+        <div className="mb-8 rounded-[1.75rem] border border-gold/40 bg-amber-800 dark:bg-gold/10 p-5">
           <div className="flex items-center gap-3">
             <span className="text-xl">{String.fromCodePoint(0x26A0, 0xFE0F)}</span>
             <div>
-              <p className="font-medium text-ink-900 dark:text-white">
+              <p className="font-medium text-gold">
                 {reorderAlerts.length} {reorderAlerts.length === 1 ? 'producto necesita' : 'productos necesitan'} reposicion
               </p>
-              <p className="mt-0.5 text-sm text-ink-600 dark:text-ink-300">
+              <p className="mt-0.5 text-sm text-amber-200 dark:text-ink-300">
                 Stock en o por debajo del minimo configurado
               </p>
             </div>
@@ -43,13 +43,13 @@ export async function InventoryDashboard() {
               <Link
                 key={p.id}
                 href={`/products/${p.id}`}
-                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white dark:bg-ink-800 px-3 py-1.5 text-sm font-medium text-ink-800 dark:text-white transition hover:bg-gold/10"
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-amber-700 dark:bg-ink-800 px-3 py-1.5 text-sm font-medium text-gold transition hover:bg-amber-600 dark:hover:bg-gold/10"
               >
                 <span
                   className={`h-2 w-2 rounded-full ${p.stock === 0 ? 'bg-coral' : 'bg-gold'}`}
                 />
                 {p.name}
-                <span className="text-ink-500 dark:text-ink-400">({p.stock}/{p.minStock})</span>
+                <span className="text-amber-300 dark:text-ink-400">({p.stock}/{p.minStock})</span>
               </Link>
             ))}
           </div>

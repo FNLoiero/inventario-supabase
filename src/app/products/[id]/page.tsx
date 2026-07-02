@@ -75,7 +75,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     ? 'bg-mint/15 text-mint ring-1 ring-mint/30'
                     : movement.movementType === 'out'
                       ? 'bg-coral/15 text-coral ring-1 ring-coral/30'
-                      : 'bg-gold/20 text-yellow-800 dark:text-gold ring-1 ring-gold/35';
+                      : 'bg-gold/20 text-amber-600 dark:text-gold ring-1 ring-gold/35';
                 return (
                   <div key={movement.id} className="rounded-[1.25rem] border border-ink-200 dark:border-ink-700 p-4">
                     <div className="flex items-center justify-between gap-3">

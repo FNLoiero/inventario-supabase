@@ -8,7 +8,7 @@ import { formatCurrency, getProductStatusLabel } from '@/lib/inventory';
 
 const statusStyles: Record<string, string> = {
   active: 'bg-mint/15 text-mint-700 dark:text-mint ring-1 ring-mint/30',
-  low_stock: 'bg-gold/20 text-yellow-800 dark:text-gold ring-1 ring-gold/35',
+  low_stock: 'bg-gold/20 text-amber-600 dark:text-gold ring-1 ring-gold/35',
   out_of_stock: 'bg-coral/15 text-coral ring-1 ring-coral/30',
   archived: 'bg-ink-100 dark:bg-ink-700 text-ink-500 dark:text-ink-400 ring-1 ring-ink-200 dark:ring-ink-600',
 };

@@ -119,7 +119,7 @@ function Chip({
     ? accent === 'active'
       ? 'bg-mint/30 text-mint-700 dark:text-mint ring-1 ring-mint/50'
       : accent === 'warning'
-        ? 'bg-gold/30 text-yellow-800 dark:text-gold ring-1 ring-gold/50'
+        ? 'bg-gold/30 text-amber-600 dark:text-gold ring-1 ring-gold/50'
         : accent === 'danger'
           ? 'bg-coral/20 text-coral ring-1 ring-coral/40'
           : 'bg-ink-900 dark:bg-sand text-white dark:text-ink-900 shadow-soft'
